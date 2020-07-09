@@ -1,0 +1,75 @@
+extends layout
+
+include mixins/sharedJade
+
+block content
+
+  block modalForm
+
+  .page-header
+   h2= pageHeader.title
+
+  .row
+    .col-xs-12.col-sm-8
+
+      div(style="height:10px;")
+
+      div
+        a.btn.btn-primary.btn-md(href='/comments') Post a Comment
+        .pull-right
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-left") 
+            | Back
+          | &nbsp;&nbsp;
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-right")
+            | Next
+
+      div(style="height:30px;")
+
+      .row.list-group
+
+        each doc in responseBody
+        
+          - var username = doc.username
+          - var commentid = doc._id
+          - var theTime = doc.datecreated
+          - var fname= doc.firstname
+          - var lname= doc.lastname
+          - var fullName= fname + " " + lname
+          - var city= doc.city
+          - var state= doc.state
+          - var address= ", " + city + ", " + state
+          - var candidate= doc.candidate  + "."
+          - var comment= doc.comment
+
+          .col-xs-12.list-group-item
+
+            h4= username
+              small= address
+                br
+                small
+                  +toISODate(theTime)
+
+            .panel.panel-primary
+              .panel-heading
+                i Which candidate do I support? ...
+
+              .panel-body
+                .row
+                  .col-xs-12
+                    p(class="controlOverflow")= candidate
+                    p(class="controlOverflow")= comment
+
+            .pull-right
+              a.btn.btn-primary.btn-md(href='/#{commentid}') Edit
+              | &nbsp;&nbsp;&nbsp;&nbsp;
+              form(class="btn-group inline", method="post", action="/#{commentid}?_method=delete")
+                button(class="btn btn-warning btn-md", type="submit") Delete
+
+            <div style="height:40px;"></div>
+
+      div(style="height:10px;")
+
+    .col-xs-12.col-sm-4
+      p.lead= sideBlurb

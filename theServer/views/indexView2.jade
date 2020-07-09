@@ -1,0 +1,154 @@
+extends layout
+
+include mixins/sharedJade
+
+block content
+
+  form.form(role="form", class="myFavNoveltiesFormClass", id="myFavNoveltiesForm")
+    .modal.fade(id='updateFormModal' tabindex='-1')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title Edit your comment
+          .modal-body
+
+            fieldset
+    
+              .form-group
+                label.control-label(for="firstName") First Name
+                div
+                  input.form-control(id="firstName", name="firstName", placeholder="first name", maxlength="10", type="text")
+      
+      
+              .form-group
+                label.control-label(for="lastName") Last Name
+                div
+                  input.form-control(id="lastName", name="lastName", placeholder="last name", maxlength="10", type="text")
+      
+      
+              .form-group
+                label.control-label(for="city") City
+                div
+                  input.form-control(id="city", name="city", placeholder="city", maxlength="10", type="text")
+      
+      
+              .form-group
+                label.control-label(for="state") State
+                div
+                  +selectStateFormControl()
+      
+      
+              .form-group
+                label.control-label(for="candidate") Which candidate do you support?
+                div
+                  .radio
+                    label(for="candidate1")
+                      input(type="radio", id="candidate1", name="candidate", value="I support Donald Trump")
+                      span I support Donald Trump
+                  .radio
+                    label(for="candidate2")
+                      input(type="radio", id="candidate2", name="candidate", value="I support Hillary Clinton")
+                      span I support Hillary Clinton
+                  .radio
+                    label(for="candidate0")
+                      input(type="radio", id="candidate0", name="candidate", value="I support neither candidate")
+                      span I support neither candidate
+    
+    
+              .form-group
+                label.control-label(for="comment") Comment about the candidates
+                div
+                  textarea.form-control(id="comment", name="comment", placeholder="your comments", rows="3", maxlength="350")
+    
+    
+      
+              .col-xs-12(style="height:15px;")
+      
+              .form-group
+                button(type="submit", class="btn btn-primary btn-md") Submit Form
+                | &nbsp;&nbsp;&nbsp;&nbsp;
+                button(class="btn btn-warning btn-md", data-dismiss="modal") Cancel
+    
+    
+    
+    
+
+  .page-header
+   h2= pageHeader.title
+
+  .row
+    .col-xs-12.col-sm-8
+
+      div(style="height:10px;")
+
+      div
+        a.btn.btn-primary.btn-md(href='/comments') Post a Comment
+        .pull-right
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-left") 
+            | Back
+          | &nbsp;&nbsp;
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-right")
+            | Next
+
+      div(style="height:30px;")
+
+      .row.list-group
+
+        each doc in responseBody
+        
+          - var commentid = doc._id
+          - var theTime = doc.time
+          - var fname= doc.firstName
+          - var lname= doc.lastName
+          - var fullName= fname + " " + lname
+          - var city= doc.city
+          - var state= doc.state
+          - var address= ", " + city + ", " + state
+          - var candidate= doc.candidate  + "."
+          - var comment= doc.comment
+
+          .col-xs-12.list-group-item
+
+            h4= fullName
+              small= address
+                br
+                small
+                  +toISODate(theTime)
+
+            .panel.panel-primary
+              .panel-heading
+                i Which candidate do I support? ...
+
+              .panel-body
+                .row
+                  .col-xs-12
+                    p(class="controlOverflow")= candidate
+                    p(class="controlOverflow")= comment
+
+            .pull-right
+              a.btn.btn-primary.btn-md(href='/#{commentid}') Edit
+              | &nbsp;&nbsp;&nbsp;&nbsp;
+              form(class="btn-group inline", method="post", action="/#{commentid}?_method=delete")
+                button(class="btn btn-warning btn-md", type="submit") Delete
+
+            <div style="height:40px;"></div>
+
+      div(style="height:10px;")
+
+      div
+        a.btn.btn-primary.btn-md(href='/comments') Post a Comment
+        .pull-right
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-left") 
+            | Back
+          | &nbsp;&nbsp;
+          button(type="button", class="btn btn-default btn-md")
+            span(class="glyphicon glyphicon-menu-right")
+            | Next
+
+      div(style="height:30px;")
+
+    .col-xs-12.col-sm-4
+      p.lead= sideBlurb
